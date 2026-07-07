@@ -5,6 +5,8 @@
 ![XGBoost](https://img.shields.io/badge/XGBoost-172B4D?style=for-the-badge)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
 
+**🌟 Live Demo:** [https://adelaide-mvp-sjsx8wnrerjuycvx82whdp.streamlit.app/](https://adelaide-mvp-sjsx8wnrerjuycvx82whdp.streamlit.app/)
+
 This project is a functional prototype of an **Attention Measurement and Optimization Platform**, inspired by Adelaide's industry-leading AU metric. It demonstrates an end-to-end data science workflow from synthetic data generation and predictive modeling to causal inference and interactive visualization.
 
 ## 🚀 Features

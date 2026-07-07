@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import xgboost as xgb
 import joblib
 import os
 
@@ -85,16 +86,24 @@ def train_and_save_model(df, model_path='attention_model.pkl'):
     X = df_encoded[features]
     y = df_encoded['attention_score']
     
-    # Train model using Random Forest instead of XGBoost to avoid libomp Mac dependencies
+    # Train Random Forest
     from sklearn.ensemble import RandomForestRegressor
-    model = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42)
-    model.fit(X, y)
+    rf_model = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42)
+    rf_model.fit(X, y)
     
-    # Save model and feature names
-    joblib.dump({'model': model, 'features': features}, model_path)
-    print(f"Model saved to {model_path}")
+    # Train XGBoost
+    xgb_model = xgb.XGBRegressor(n_estimators=100, learning_rate=0.1, max_depth=5, random_state=42)
+    xgb_model.fit(X, y)
     
-    return model, features
+    # Save models and feature names
+    joblib.dump({
+        'rf_model': rf_model, 
+        'xgb_model': xgb_model, 
+        'features': features
+    }, model_path)
+    print(f"Models saved to {model_path}")
+    
+    return {'rf_model': rf_model, 'xgb_model': xgb_model}, features
 
 if __name__ == "__main__":
     df = generate_synthetic_data(20000)

@@ -90,7 +90,8 @@ if df.empty or model_data is None:
     st.error("Data or model not found. Please run `python model_pipeline.py` first.")
     st.stop()
 
-model = model_data['model']
+rf_model = model_data['rf_model']
+xgb_model = model_data['xgb_model']
 features_list = model_data['features']
 
 tab1, tab2, tab3 = st.tabs(["🚀 Attention Predictor", "📊 Insights & EDA", "🧪 Causal Impact"])
@@ -115,6 +116,9 @@ with tab1:
         
     with col2:
         st.subheader("Optimization Results")
+        
+        selected_model_name = st.radio("Select Model", ["Random Forest", "XGBoost"], horizontal=True)
+        model = xgb_model if selected_model_name == "XGBoost" else rf_model
         
         # Prepare input for prediction
         input_data = {

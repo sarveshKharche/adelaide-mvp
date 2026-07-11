@@ -77,7 +77,7 @@ def generate_synthetic_data(num_samples=10000):
     return df
 
 def train_and_save_model(df, model_path='attention_model.pkl'):
-    print("Training XGBoost Model...")
+    print("Training XGBoost and Random Forest Models...")
     
     # Categorical encoding
     df_encoded = pd.get_dummies(df, columns=['ad_format', 'page_position', 'device_type'])
@@ -86,14 +86,32 @@ def train_and_save_model(df, model_path='attention_model.pkl'):
     X = df_encoded[features]
     y = df_encoded['attention_score']
     
-    # Train Random Forest
+    from sklearn.model_selection import train_test_split
+    from sklearn.metrics import mean_squared_error, r2_score
     from sklearn.ensemble import RandomForestRegressor
+    
+    # Split the data (80% training, 20% testing)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    # Train Random Forest
     rf_model = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=42)
-    rf_model.fit(X, y)
+    rf_model.fit(X_train, y_train)
+    
+    # Evaluate Random Forest
+    rf_predictions = rf_model.predict(X_test)
+    rf_rmse = np.sqrt(mean_squared_error(y_test, rf_predictions))
+    rf_r2 = r2_score(y_test, rf_predictions)
+    print(f"Random Forest - Test RMSE: {rf_rmse:.4f}, Test R-Squared: {rf_r2:.4f}")
     
     # Train XGBoost
     xgb_model = xgb.XGBRegressor(n_estimators=100, learning_rate=0.1, max_depth=5, random_state=42)
-    xgb_model.fit(X, y)
+    xgb_model.fit(X_train, y_train)
+    
+    # Evaluate XGBoost
+    xgb_predictions = xgb_model.predict(X_test)
+    xgb_rmse = np.sqrt(mean_squared_error(y_test, xgb_predictions))
+    xgb_r2 = r2_score(y_test, xgb_predictions)
+    print(f"XGBoost - Test RMSE: {xgb_rmse:.4f}, Test R-Squared: {xgb_r2:.4f}")
     
     # Save models and feature names
     joblib.dump({

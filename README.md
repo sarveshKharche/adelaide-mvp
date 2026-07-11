@@ -39,7 +39,15 @@ The predictive engine utilizes two powerful tree-based algorithms:
 - **XGBoost Regressor**
 - **Random Forest Regressor** (scikit-learn)
 
-Both models are trained to predict the continuous `attention_score` target. The models and their corresponding feature maps are serialized using `joblib` into an `attention_model.pkl` artifact for rapid inference in the web app.
+Both models are trained to predict the continuous `attention_score` target. The training pipeline implements an 80/20 train-test split for robust evaluation. 
+
+**Test Set Evaluation Results (20% holdout):**
+- **XGBoost:** RMSE = 10.20, R-Squared = 0.8350
+- **Random Forest:** RMSE = 14.16, R-Squared = 0.6824
+
+*(Note: The XGBoost model effectively recovers the synthetic signal, with the 10.20 RMSE perfectly aligning with the 10-point Gaussian noise intentionally injected during data generation).*
+
+The models and their corresponding feature maps are serialized using `joblib` into an `attention_model.pkl` artifact for rapid inference in the web app.
 
 ---
 
